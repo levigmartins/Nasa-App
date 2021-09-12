@@ -3,6 +3,9 @@ import { StyleSheet, ScrollView, Text, TouchableOpacity, useWindowDimensions, Vi
 import Image from 'react-native-scalable-image';
 import Config from '../../config.json';
 
+import LoadingScreen from '../components/Loading';
+import APODModal from '../components/APODModal';
+
 function Home({navigation}) {
 
     const screen=useWindowDimensions();
@@ -11,22 +14,29 @@ function Home({navigation}) {
 
     var [date, setDate] = React.useState(today.substring(0,10));
     var [img, setImg] = React.useState();
-
+   
     const getAPOD = async () => {
         try {
-            const response = await fetch(`https://api.nasa.gov/planetary/apod?api_key=${Config.APP_KEY}&date=${date}`);
+            const response = await fetch(`https://api.nasa.gov/planetary/apod?api_key=${Config.APP_KEY}`);
             const json = await response.json();
             setImg(json);
-       } catch (error) {
+          } catch (error) {
             console.error(error);
-       } finally {
+          } finally {
             setLoading(false);
-       }
+          }
     }
-   
+
+
     React.useEffect(() => {
         getAPOD();
     }, []);
+
+    if (isLoading) {
+        return (
+            <LoadingScreen/>
+        )
+    }
 
     return (
         <View style={{flex:1}}>
@@ -36,14 +46,13 @@ function Home({navigation}) {
                     In fact, this website is one of the most popular websites across all federal agencies. 
                     It has the popular appeal of a Justin Bieber video.
                 </Text>
-                <TouchableOpacity onPress={() => {
-                        alert(`Name: ${img.title}`)
-                }}>
-                    <Image
-                        width={screen.width/1.1}
-                        source={{uri: `https://apod.nasa.gov/apod/image/1607/FireflyMilkyWayMPark1024.jpg`}}
-                    />
-                </TouchableOpacity>               
+                <Image
+                    width={screen.width/1.1}
+                    source={{uri: `${img.url}`}}
+                    style={{marginBottom: 15}}
+                />
+                <APODModal img={img} style={{marginBottom: 20}}/>
+                <Text style={{marginBottom: 50}}>a</Text>
             </ScrollView>
         </View>
     );
@@ -57,6 +66,47 @@ const styles = StyleSheet.create({
         flexDirection: "column",
         backgroundColor: '#0075C9',
         padding: 20,
+    },
+    centeredView: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        marginTop: 22
+    },
+    modalView: {
+        margin: 20,
+        backgroundColor: "white",
+        borderRadius: 20,
+        padding: 35,
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+          width: 0,
+          height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5
+    },
+    button: {
+        borderRadius: 20,
+        padding: 10,
+        elevation: 2
+    },
+    buttonOpen: {
+        backgroundColor: "#F194FF",
+    },
+    buttonClose: {
+        backgroundColor: "#2196F3",
+    },
+    textStyle: {
+        color: "white",
+        fontWeight: "bold",
+        textAlign: "center"
+    },
+    modalText: {
+        marginBottom: 15,
+        textAlign: "center"
     }
 });
 

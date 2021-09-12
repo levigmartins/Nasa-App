@@ -10,7 +10,7 @@ const Stack = createStackNavigator();
 export default function () {
     return (
         <NavigationContainer>
-            <Stack.Navigator initialRouteName={"Start"} headerMode={"screen"}>
+            <Stack.Navigator initialRouteName={"Start"}>
                 <Stack.Screen component={StartScreen} name="Start" options={{headerShown: false}}/>
                 <Stack.Screen component={Home} name="Home" options={{title: "APOD", headerTitleAlign: "center"}}/>
             </Stack.Navigator>
