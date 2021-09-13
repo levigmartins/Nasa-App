@@ -23,10 +23,12 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#0B3D91"
-      }
+      },
+      "package": "android.nasaapp"
     },
     "web": {
       "favicon": "./assets/nasa.png"
-    }
+    },
+    "userInterfaceStyle": "automatic"
   }
 }
