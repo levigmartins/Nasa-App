@@ -8,7 +8,7 @@ function Start({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={() => { navigation.navigate('Apod') }}>
+      <TouchableOpacity onPress={() => { navigation.navigate('Home') }}>
         <Image
           source={require('../static/img/nasa.png')}
           width={screen.width/1.5}
