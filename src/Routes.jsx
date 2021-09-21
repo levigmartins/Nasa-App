@@ -5,6 +5,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import StartScreen from './screens/Start';
 import Home from './screens/Home';
 import Apod from './screens/APOD';
+import Eonet from './screens/EONET';
 
 const Stack = createStackNavigator();
 
@@ -15,6 +16,7 @@ export default function () {
                 <Stack.Screen component={StartScreen} name="Start" options={{headerShown: false}}/>
                 <Stack.Screen component={Home} name="Home" options={{title: "MyNASA", headerTitleAlign: "center"}}/>
                 <Stack.Screen component={Apod} name="Apod" options={{title: "APOD", headerTitleAlign: "center"}}/>
+                <Stack.Screen component={Eonet} name="Eonet" options={{title: "EONET", headerTitleAlign: "center"}}/>
             </Stack.Navigator>
         </NavigationContainer>
     )

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { StyleSheet, ScrollView, Text, Button, useWindowDimensions, View } from 'react-native';
+import { StyleSheet, ScrollView, Text, Button, useWindowDimensions, View, TouchableOpacity, Linking } from 'react-native';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import Image from 'react-native-scalable-image';
 import Config from '../../config.json';
@@ -74,6 +74,16 @@ function Apod({navigation}) {
                     style={{marginBottom: 15}}
                 />
             )
+        else if(img.media_type=="video")
+            return (
+                <View>
+                    <Text style={styles.future_date}>Its a Video!! Click</Text>
+                    <TouchableOpacity onPress={() => Linking.openURL(`${img.url}`)}>
+                        <Text style={styles.future_date}>HERE</Text>
+                    </TouchableOpacity>
+                    <Text style={styles.future_date}>to watch it on Youtube!</Text>
+                </View>
+            )
     }
 
     function renderMODAL(){        
@@ -126,6 +136,13 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontStyle: 'italic',
         marginBottom: 20
+    },
+    video: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        bottom: 0,
+        right: 0
     }
 });
 

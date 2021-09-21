@@ -13,6 +13,7 @@ function Home({navigation}) {
                 <View style={{marginBottom: 12}}><Button title="APOD" color="#dd361c" onPress={() => {navigation.navigate('Apod')}}/></View>
                 <View style={{marginBottom: 12}}><Button title="NeoWs" color="#dd361c" onPress={() => {navigation.navigate('Apod')}}/></View>
                 <View style={{marginBottom: 12}}><Button title="Mars Hover Photos" color="#dd361c" onPress={() => {navigation.navigate('Apod')}}/></View>
+                <View style={{marginBottom: 12}}><Button title="EONET" color="#dd361c" onPress={() => {navigation.navigate('Eonet')}}/></View>
             </View>
         </ScrollView>
     );
