@@ -2,13 +2,11 @@ import * as React from 'react';
 import { StyleSheet, ScrollView, Text, Button, useWindowDimensions, View } from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 import { DataTable } from 'react-native-paper';
-import Config from '../../config.json';
 import LoadingScreen from '../components/Loading';
 
 
 function Eonet({navigation}) {
 
-    const screen=useWindowDimensions();
     const [categories, setCategories] = React.useState([{}]);
     const [isLoading, setLoading] = React.useState(true);
 
@@ -17,7 +15,7 @@ function Eonet({navigation}) {
 
     const getCategories = async () => {
         try {
-            const response = await fetch('https://eonet.sci.gsfc.nasa.gov/api/v2.1/categories');
+            const response = await fetch('https://eonet.sci.gsfc.nasa.gov/api/v2.1/categories');            
             const json = await response.json();
             setCategories((json.categories).map(function(item) {
                 const aux = {
@@ -26,35 +24,60 @@ function Eonet({navigation}) {
                 }
                 return aux;
             }));
-            setChosenCategory(json.categories[0].id);
+            setChosenCategory(json.categories[0].id);            
         } catch(error) {
             console.log(error);
+        } finally {
+            try {
+                const response = await fetch('https://eonet.sci.gsfc.nasa.gov/api/v2.1/categories');            
+                const json = await response.json();
+                const event = json.categories[0].id;
+
+                const response2 = await fetch(`https://eonet.sci.gsfc.nasa.gov/api/v2.1/categories/${event}?limit=5`);
+                const json2 = await response2.json();
+                setEvents(json2);
+            } catch (error) {
+                console.error(error);
+            } finally {
+                setLoading(false);
+            }
         }
     }
    
-    const getEvents = async () => {
+    const getEvents = async (event) => {
         try {
-            const response = await fetch(`https://eonet.sci.gsfc.nasa.gov/api/v2.1/categories/${chosen_category}?limit=5`);
+            const response = await fetch(`https://eonet.sci.gsfc.nasa.gov/api/v2.1/categories/${event}?limit=5`);
             const json = await response.json();
             setEvents(json);
         } catch (error) {
             console.error(error);
-        } finally {
-            setLoading(false);
         }
     }
 
     React.useEffect(() => {
-        getCategories().then(getEvents());
+        getCategories();
     }, []);
+
+    function renderCells() {
+        if(events.events[0]!=undefined) {
+            return (
+                (events.events).map(each => {
+                    return (
+                        <DataTable.Row>
+                            <DataTable.Cell>{each.title}</DataTable.Cell>
+                            <DataTable.Cell>{(each.geometries[0].date).substring(0,10)}</DataTable.Cell>                        
+                        </DataTable.Row>
+                    )
+                })
+            )
+        };
+    }
 
     if (isLoading) {
         return (
             <LoadingScreen/>
         )
-    }
-
-    console.log(events);
+    };
 
     return (
             <ScrollView style={styles.container}>
@@ -73,23 +96,25 @@ function Eonet({navigation}) {
                     <View style={styles.picker}>
                         <Picker
                             selectedValue={chosen_category}
-                            onValueChange={(itemValue, itemIndex) => setChosenCategory(itemValue)
-                        }>  
+                            onValueChange={(itemValue, itemIndex) => {
+                                setChosenCategory(itemValue);
+                                getEvents(itemValue);
+                        }}>  
                             {categories.map((category, index) => {
-                                return <Picker.Item key={`${index}`} label={`${category.title}`} value={`${category.id}`} />
+                                return <Picker.Item key={`${index}`} label={`${category.title}`} value={category.id} />
                             })}                                 
                         </Picker>                            
                     </View>
-                    <Text style={{textAlign: 'justify', marginVertical: 10}}>{events.description}</Text>
+                    <Text style={{textAlign: 'justify', marginVertical: 10, color: 'white', fontWeight: 'bold'}}>Description: {events.description}</Text>
                     <DataTable>
                         <DataTable.Header>
                             <DataTable.Title>Name</DataTable.Title>
                             <DataTable.Title>Date</DataTable.Title>
-                            <DataTable.Title>Type</DataTable.Title>
-                            <DataTable.Title>Coordinate</DataTable.Title>
-                        </DataTable.Header>
+                            
+                        </DataTable.Header>                        
+                        {renderCells()}
+                                        
                     </DataTable>
-
                 </View>
             </ScrollView>
     );
