@@ -1,14 +1,14 @@
 import * as React from 'react';
-import { StyleSheet, ScrollView, Text, Button, useWindowDimensions, View } from 'react-native';
+import { StyleSheet, ScrollView, Text, Modal, View, Pressable } from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 import { DataTable } from 'react-native-paper';
 import LoadingScreen from '../components/Loading';
-
 
 function Eonet({navigation}) {
 
     const [categories, setCategories] = React.useState([{}]);
     const [isLoading, setLoading] = React.useState(true);
+    const [modalVisible, setModalVisible] = React.useState(false);
 
     var [chosen_category, setChosenCategory] = React.useState();
     var [events, setEvents] = React.useState();
@@ -52,7 +52,7 @@ function Eonet({navigation}) {
         } catch (error) {
             console.error(error);
         }
-    }
+    }    
 
     React.useEffect(() => {
         getCategories();
@@ -61,9 +61,9 @@ function Eonet({navigation}) {
     function renderCells() {
         if(events.events[0]!=undefined) {
             return (
-                (events.events).map(each => {
+                (events.events).map((each, index) => {
                     return (
-                        <DataTable.Row>
+                        <DataTable.Row key={`${index}`}>
                             <DataTable.Cell>{each.title}</DataTable.Cell>
                             <DataTable.Cell>{(each.geometries[0].date).substring(0,10)}</DataTable.Cell>                        
                         </DataTable.Row>
@@ -114,7 +114,7 @@ function Eonet({navigation}) {
                         </DataTable.Header>                        
                         {renderCells()}
                                         
-                    </DataTable>
+                    </DataTable>                    
                 </View>
             </ScrollView>
     );
@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         borderColor: 'white',
         borderStyle: 'solid'
-    }
+    },    
 });
 
 export default Eonet;
